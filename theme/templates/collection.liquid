@@ -1,0 +1,77 @@
+{% paginate collection.products by 20 %}
+
+  {%- if collection.image -%}
+
+    {%- assign hero_img = collection.image -%}
+
+    <div class="hero hero--md bg-gray-200">
+      <img
+        data-src="{{ hero_img | img_url: '360x' }}"
+        data-srcset="{{ hero_img | img_url: '720x' }} 720w, {{ hero_img | img_url: '1260x' }} 1260w, {{ hero_img | img_url: '1600x' }} 1600w, {{ hero_img | img_url: '2400x' }} 2400w"
+        data-sizes="auto"
+        data-src="{{ hero_img | img_url: '600x', scale: 2 }}"
+        alt="{{ hero_img.alt | escape }}"
+        class="lazyload hero__image">
+        <div class="hero__title">
+          <h1 class="hero__title m-0">{{ collection.title }}</h1>
+        </div>
+    </div>
+    {%- if collection.description != blank -%}
+      <div class="page-pad text-center py-12 mb-16 bg-gray-100 border-b">
+        <div class="copy">
+          {{ collection.description }}
+        </div>
+      </div>
+    {%- endif -%}
+
+  {%- else -%}
+
+    <div class="page-pad text-center pt-16 pb-20">
+      <div class="copy">
+        <h1 class="m-0">{{ collection.title }}</h1>
+        {%- if collection.description != blank -%}
+        <div class="mt-8">
+          {{ collection.description }}
+        </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+  {%- endif -%}
+
+  <div class="page-pad">
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+      {%- for product in collection.products -%}
+
+        <div class="text-center">
+          <a href="{{ product.url | within: collection }}">
+            {% render 'responsive-image' with image: product.featured_image, width: 600 %}
+          </a>
+          <h2 class="text-xl m-2">
+            <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
+          </h2>
+          <p class="mt-0">
+            {{ product.price | money }}
+            {%- unless product.available -%} - <strong>sold out</strong>{%- endunless -%}
+          </p>
+        </div>
+
+      {%- else -%}
+
+        <div>
+          <p>no matches</p>
+        </div>
+
+      {%- endfor -%}
+    </div>
+
+    {%- if paginate.pages > 1 -%}
+      <div class="m-8 text-center">
+        {{ paginate | default_pagination }}
+      </div>
+    {%- endif -%}
+
+  </div>
+
+{% endpaginate %}

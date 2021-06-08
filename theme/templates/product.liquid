@@ -1,0 +1,42 @@
+{% assign current_variant = product.selected_or_first_available_variant %}
+{% assign featured_image = current_variant.featured_image | default: product.featured_image %}
+
+<section class="page-pad">
+  <div id="overview" class="lg:grid lg:grid-cols-5 lg:gap-8">
+
+    <div class="lg:col-span-3">
+      <div class="copy">
+        <div class="text-center">
+          {% render 'responsive-image' with image: featured_image, width: 1200, image_attributes: "data-featured-image" %}
+        </div>
+        {% if product.images.size > 1 %}
+          <div class="my-4">
+            {% for image in product.images %}
+            <a href="{{ image.src | img_url: '1200x' }}" data-thumbnail-links><img data-src="{{ image | img_url: '50x50' }}" alt="{{ image.alt | escape }}" class="lazyload"></a>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="lg:col-span-2">
+      <div class="copy">
+        <h1 class="product-title">{{ product.title }}</h1>
+        <p>
+          {% if product.price_varies %}
+            {{ product.price_min | money }} - {{ product.price_max | money }}
+          {% else %}
+            {{ product.price | money }}
+          {% endif %}
+        </p>
+
+        {% render 'product-form' %}
+
+        <div>{{ product.description }}</div>
+      </div>
+    </div>
+
+  </div> <!--.grid-->
+</section>
+
+{% section 'product-recommendations' %}
